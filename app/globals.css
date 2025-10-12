@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Bitcoin Sunset Design System - TipSats Branding */
+    --background: 0 0% 6%;
+    /* #0F0F0F - Deep dark background for premium feel */
+    --foreground: 0 0% 100%;
+    /* #ffffff - Pure white text */
+
+    --muted: 0 0% 10%;
+    /* #1A1A1A - Darker muted background */
+    --muted-foreground: 0 0% 100% / 0.6;
+    /* rgba(255, 255, 255, 0.6) - Muted white text */
+
+    --card: 0 0% 100% / 0.05;
+    /* rgba(255, 255, 255, 0.05) - Neumorphic card base */
+    --card-foreground: 0 0% 100%;
+    /* #ffffff - White card text */
+
+    --popover: 0 0% 6% / 0.95;
+    /* rgba(15, 15, 15, 0.95) - Glass morphism popover */
+    --popover-foreground: 0 0% 100%;
+    /* #ffffff - White popover text */
+
+    /* Primary - Bitcoin Orange */
+    --primary: 28 100% 54%;
+    /* #F7931A - Bitcoin Orange for CTAs */
+    --primary-foreground: 0 0% 0%;
+    /* #000000 - Black text on orange */
+
+    /* Secondary - Deep Purple */
+    --secondary: 258 90% 36%;
+    /* #5B21B6 - Deep Purple for premium accents */
+    --secondary-foreground: 0 0% 100%;
+    /* #ffffff - White text on purple */
+
+    /* Accent - Electric Blue */
+    --accent: 214 100% 59%;
+    /* #3B82F6 - Electric Blue for secondary actions */
+    --accent-foreground: 0 0% 100%;
+    /* #ffffff - White text on blue */
+
+    --destructive: 0 84% 60%;
+    /* #EF4444 - Red for errors */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 100% / 0.1;
+    /* rgba(255, 255, 255, 0.1) - Subtle border */
+    --input: 0 0% 100% / 0.05;
+    /* rgba(255, 255, 255, 0.05) - Input background */
+    --ring: 28 100% 54% / 0.5;
+    /* Bitcoin Orange focus ring */
+
+    --radius: 0.75rem;
+
+    /* Bitcoin Sunset specific colors */
+    --bitcoin-orange: 28 100% 54%;
+    /* #F7931A */
+    --deep-purple: 258 90% 36%;
+    /* #5B21B6 */
+    --electric-blue: 214 100% 59%;
+    /* #3B82F6 */
+    --sunset-start: 28 100% 54%;
+    /* Orange */
+    --sunset-end: 258 90% 36%;
+    /* Purple */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    /* Bitcoin Sunset gradient background */
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(247, 147, 26, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(91, 33, 182, 0.08) 0%, transparent 50%);
+  }
+}
+
+/* Bitcoin Sunset Design System Utilities */
+@layer utilities {
+  .glassmorphism {
+    @apply bg-card/10 backdrop-blur-xl border border-border;
+  }
+
+  .glass-morphism {
+    background: rgba(15, 15, 15, 0.5);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .bitcoin-glow {
+    box-shadow: 0 0 30px rgba(247, 147, 26, 0.3);
+  }
+
+  .bitcoin-glow-hover {
+    transition: box-shadow 0.3s ease;
+  }
+
+  .bitcoin-glow-hover:hover {
+    box-shadow: 0 0 40px rgba(247, 147, 26, 0.5);
+  }
+
+  .purple-glow {
+    box-shadow: 0 0 30px rgba(91, 33, 182, 0.3);
+  }
+
+  .sunset-gradient {
+    background: linear-gradient(135deg, #F7931A 0%, #5B21B6 100%);
+  }
+
+  .sunset-gradient-text {
+    background: linear-gradient(135deg, #F7931A 0%, #5B21B6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .neumorphic-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .neumorphic-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(247, 147, 26, 0.3);
+    box-shadow: 0 0 30px rgba(247, 147, 26, 0.2);
+  }
+}
