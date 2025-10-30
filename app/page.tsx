@@ -1,14 +1,95 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Zap, Wallet, Gift, TrendingUp, Bitcoin, Sparkles, ArrowRight } from "lucide-react";
-import { WalletModal } from "@/components/wallet/WalletModal";
+import { useTurnkey } from "@turnkey/react-wallet-kit";
+import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 export default function LandingPage() {
-  const [walletModalOpen, setWalletModalOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [hasAuthenticated, setHasAuthenticated] = useState(false);
+  const { handleLogin, authState, user } = useTurnkey();
+
+  // Memoize user email to prevent unnecessary recalculations
+  const userEmail = useMemo(
+    () => user?.userEmail || user?.userName || "user@tipsats.app",
+    [user?.userEmail, user?.userName]
+  );
+
+  // Handle wallet creation after authentication
+  useEffect(() => {
+    // Wait for full user data to be loaded
+    if (authState !== "authenticated" || !hasAuthenticated || isCreating || !user?.userId) {
+      return;
+    }
+
+    let isMounted = true;
+
+    const createWalletAfterAuth = async () => {
+      console.log("Starting wallet creation...");
+      setIsCreating(true);
+
+      try {
+        console.log("Creating wallet for:", userEmail);
+        console.log("User ID:", user?.userId);
+
+        // Create wallet using server-side API (supports Stacks!)
+        const response = await fetch("/api/wallet/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: userEmail,
+            userId: user?.userId,
+          }),
+        });
+
+        if (!isMounted) return;
+
+        const data = await response.json();
+        console.log("Wallet creation response:", data);
+
+        if (!data.success) {
+          throw new Error(data.error || "Failed to create wallet");
+        }
+
+        toast.success("Wallet created successfully!");
+
+        // Redirect to dashboard
+        console.log("Redirecting to dashboard...");
+        setTimeout(() => {
+          if (isMounted) {
+            window.location.href = "/dashboard";
+          }
+        }, 1000);
+      } catch (error) {
+        if (!isMounted) return;
+        console.error("Error creating wallet:", error);
+        toast.error("Failed to create wallet. Please try again.");
+        setIsCreating(false);
+        setHasAuthenticated(false);
+      }
+    };
+
+    createWalletAfterAuth();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [authState, hasAuthenticated, isCreating, userEmail, user?.userId]);
+
+  // Memoize the create wallet handler
+  const handleCreateWallet = useCallback(async () => {
+    try {
+      await handleLogin();
+      setHasAuthenticated(true);
+    } catch (error) {
+      console.error("Error during authentication:", error);
+      toast.error("Authentication failed. Please try again.");
+    }
+  }, [handleLogin]);
 
   return (
     <div className="min-h-screen">
@@ -45,19 +126,13 @@ export default function LandingPage() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Button
-              onClick={() => setWalletModalOpen(true)}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg h-14 px-8 bitcoin-glow-hover group"
+              onClick={handleCreateWallet}
+              disabled={isCreating}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg h-14 px-8 bitcoin-glow-hover group disabled:opacity-50"
             >
               <Wallet className="mr-2 h-5 w-5" />
-              Create Your Tip Link
+              {isCreating ? "Creating Wallet..." : "Create Your Tip Link"}
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button
-              variant="outline"
-              className="neumorphic-card font-semibold text-lg h-14 px-8"
-            >
-              <Sparkles className="mr-2 h-5 w-5" />
-              See Demo
             </Button>
           </div>
 
@@ -214,25 +289,15 @@ export default function LandingPage() {
             Join the future of creator monetization. Set up your tip link in under a minute.
           </p>
           <Button
-            onClick={() => setWalletModalOpen(true)}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xl h-16 px-12"
+            onClick={handleCreateWallet}
+            disabled={isCreating}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xl h-16 px-12 disabled:opacity-50"
           >
             <Wallet className="mr-2 h-6 w-6" />
-            Get Started for Free
+            {isCreating ? "Creating Wallet..." : "Get Started for Free"}
           </Button>
         </div>
       </section>
-
-      {/* Wallet Creation Modal */}
-      <WalletModal
-        open={walletModalOpen}
-        onOpenChange={setWalletModalOpen}
-        onWalletCreated={(wallet) => {
-          console.log("Wallet created:", wallet);
-          // Redirect to dashboard or onboarding
-          window.location.href = "/dashboard";
-        }}
-      />
     </div>
   );
 }

@@ -1,14 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { generateStacksAddress } from "@/lib/stacks/keys";
+import { generateStacksWallet } from "@/lib/wallet/stacks";
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json();
+    const { email, userId } = await request.json();
 
     if (!email || !email.includes("@")) {
       return NextResponse.json(
         { success: false, error: "Invalid email" },
+        { status: 400 }
+      );
+    }
+
+    if (!userId) {
+      return NextResponse.json(
+        { success: false, error: "Missing user ID" },
         { status: 400 }
       );
     }
@@ -22,34 +29,39 @@ export async function POST(request: Request) {
       return NextResponse.json({
         success: true,
         address: existingWallet.stacksAddress,
-        walletId: existingWallet.turnkeyWalletId,
         message: "Wallet already exists",
       });
     }
 
-    // TODO: Replace with real Turnkey SDK integration
-    // This requires Turnkey API credentials
-    const turnkeyWalletId = `turnkey_${Date.now()}_${email}`;
-    const stacksAddress = generateStacksAddress();
+    console.log("Creating Stacks wallet for:", email);
+
+    // Generate Stacks wallet using Hiro SDK
+    const wallet = await generateStacksWallet(userId);
+
+    console.log("Stacks wallet created:", wallet.address);
 
     // Save wallet to database
-    const wallet = await prisma.wallet.create({
+    const savedWallet = await prisma.wallet.create({
       data: {
         userEmail: email,
-        turnkeyWalletId,
-        stacksAddress,
+        turnkeyWalletId: userId, // Store userId for deterministic wallet recovery
+        stacksAddress: wallet.address,
+        publicKey: wallet.publicKey,
       },
     });
 
+    console.log("Wallet saved to database:", savedWallet.stacksAddress);
+
     return NextResponse.json({
       success: true,
-      address: wallet.stacksAddress,
-      walletId: wallet.turnkeyWalletId,
+      address: savedWallet.stacksAddress,
+      message: "Wallet created successfully!",
     });
   } catch (error) {
     console.error("Wallet creation error:", error);
+
     return NextResponse.json(
-      { success: false, error: "Failed to create wallet" },
+      { success: false, error: `Failed to create wallet: ${error instanceof Error ? error.message : "Unknown error"}` },
       { status: 500 }
     );
   }

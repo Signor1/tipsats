@@ -1,73 +1,42 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "@turnkey/react-wallet-kit/styles.css";
 
-@layer base {
-  :root {
-    /* Bitcoin Sunset Design System - TipSats Branding */
-    --background: 0 0% 6%;
-    /* #0F0F0F - Deep dark background for premium feel */
-    --foreground: 0 0% 100%;
-    /* #ffffff - Pure white text */
+@theme {
+  /* Bitcoin Sunset Design System - TipSats Branding */
+  --color-background: oklch(0.15 0 0);
+  --color-foreground: oklch(1 0 0);
 
-    --muted: 0 0% 10%;
-    /* #1A1A1A - Darker muted background */
-    --muted-foreground: 0 0% 100% / 0.6;
-    /* rgba(255, 255, 255, 0.6) - Muted white text */
+  --color-muted: oklch(0.2 0 0);
+  --color-muted-foreground: oklch(1 0 0 / 0.6);
 
-    --card: 0 0% 100% / 0.05;
-    /* rgba(255, 255, 255, 0.05) - Neumorphic card base */
-    --card-foreground: 0 0% 100%;
-    /* #ffffff - White card text */
+  --color-card: oklch(1 0 0 / 0.05);
+  --color-card-foreground: oklch(1 0 0);
 
-    --popover: 0 0% 6% / 0.95;
-    /* rgba(15, 15, 15, 0.95) - Glass morphism popover */
-    --popover-foreground: 0 0% 100%;
-    /* #ffffff - White popover text */
+  --color-popover: oklch(0.15 0 0 / 0.95);
+  --color-popover-foreground: oklch(1 0 0);
 
-    /* Primary - Bitcoin Orange */
-    --primary: 28 100% 54%;
-    /* #F7931A - Bitcoin Orange for CTAs */
-    --primary-foreground: 0 0% 0%;
-    /* #000000 - Black text on orange */
+  /* Primary - Bitcoin Orange #F7931A */
+  --color-primary: oklch(0.73 0.17 42);
+  --color-primary-foreground: oklch(0 0 0);
 
-    /* Secondary - Deep Purple */
-    --secondary: 258 90% 36%;
-    /* #5B21B6 - Deep Purple for premium accents */
-    --secondary-foreground: 0 0% 100%;
-    /* #ffffff - White text on purple */
+  /* Secondary - Deep Purple #5B21B6 */
+  --color-secondary: oklch(0.43 0.19 295);
+  --color-secondary-foreground: oklch(1 0 0);
 
-    /* Accent - Electric Blue */
-    --accent: 214 100% 59%;
-    /* #3B82F6 - Electric Blue for secondary actions */
-    --accent-foreground: 0 0% 100%;
-    /* #ffffff - White text on blue */
+  /* Accent - Electric Blue #3B82F6 */
+  --color-accent: oklch(0.63 0.18 245);
+  --color-accent-foreground: oklch(1 0 0);
 
-    --destructive: 0 84% 60%;
-    /* #EF4444 - Red for errors */
-    --destructive-foreground: 0 0% 100%;
+  --color-destructive: oklch(0.63 0.24 27);
+  --color-destructive-foreground: oklch(1 0 0);
 
-    --border: 0 0% 100% / 0.1;
-    /* rgba(255, 255, 255, 0.1) - Subtle border */
-    --input: 0 0% 100% / 0.05;
-    /* rgba(255, 255, 255, 0.05) - Input background */
-    --ring: 28 100% 54% / 0.5;
-    /* Bitcoin Orange focus ring */
+  --color-border: oklch(1 0 0 / 0.1);
+  --color-input: oklch(1 0 0 / 0.05);
+  --color-ring: oklch(0.73 0.17 42 / 0.5);
 
-    --radius: 0.75rem;
-
-    /* Bitcoin Sunset specific colors */
-    --bitcoin-orange: 28 100% 54%;
-    /* #F7931A */
-    --deep-purple: 258 90% 36%;
-    /* #5B21B6 */
-    --electric-blue: 214 100% 59%;
-    /* #3B82F6 */
-    --sunset-start: 28 100% 54%;
-    /* Orange */
-    --sunset-end: 258 90% 36%;
-    /* Purple */
-  }
+  --radius-lg: 0.75rem;
+  --radius-md: calc(0.75rem - 2px);
+  --radius-sm: calc(0.75rem - 4px);
 }
 
 @layer base {
